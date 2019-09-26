@@ -14,84 +14,15 @@
   </head>
 
   <body>
-      <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-          <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">I Management System</a>
-          <ul class="navbar-nav px-3">
-            <li class="nav-item text-nowrap">
-              <a class="nav-link" href="#">Sign out</a>
-            </li>
-            
-          </ul>
-      </nav>
-
+      {% include 'topnavbar.html' %}
       <div class="container-fluid">
-          <div class="row">
-              <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                  <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                      <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                          <span data-feather="home"></span>
-                          Main <span class="sr-only">(current)</span>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="file"></span>
-                          Invoice
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="shopping-cart"></span>
-                          Expense
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="users"></span>
-                          Manage User
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="bar-chart-2"></span>
-                          Reports
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="layers"></span>
-                          Invoice
-                        </a>
-                      </li>
-                    </ul>
-        
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                      <span>Saved reports</span>
-                      
-                    </h6>
-                    <ul class="nav flex-column mb-2">
-                      <li class="nav-item">
-                        <a class="nav-link" href="">
-                          <span data-feather="file-text"></span>
-                          Stocks Categories
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="">
-                          <span data-feather="file-text"></span>
-                          Create Categories
-                        </a>
-                      </li>
-      
-                    </ul>
-                  </div>
-              </nav>
+        <div class="row">
+
+          {% include 'sidenavbar.html' %}
               <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
                       {% block page_nav %}
                           <ul class="nav nav-pills ">
-                            <h3>List of Shops</h3>
+                            <h3>List of Quantities</h3>
                             </ul>{% endblock %}
                       {% block content %}
                       
@@ -99,78 +30,78 @@
                           <div class="container">
                             <div class="row">
                               <h1>
-                              <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addShopModal">New Shop</button>
+                              <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuantityModal">New Quantity</button>
                               </h1>
                               &emsp;
                               <div class="form-inline my-2 my-lg-0" style="margin-left: 50%;">
                                 <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
-                                <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getShops()">Search</button>
+                                <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getQuantities()">Search</button>
                               </div>
                               <table class="table">
                                 <thead>
                                   <tr>
-                                    <th scope="col">Shop ID</th>
-                                    <th scope="col">Shop Name</th>
-                                    <th scope="col">Shop Owner</th>
-                                    <th scope="col">Shop Address</th>
+                                    <th scope="col">Quantity ID</th>
+                                    <th scope="col">Quantity Name</th>
+                                    <th scope="col">Quantity Owner</th>
+                                    <th scope="col">Quantity Address</th>
 
                                     <th scope="col">Action</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr v-for="shop in shops">
-                                    <th scope="row">${shop.shop_id}</th>
-                                    <td><a href="#">${shop.shop_name}</a> </td>
-                                    <td>${shop.shop_owner}</td>
-                                    <td>${shop.shop_address}</td>
+                                  <tr v-for="quantity in quantitys">
+                                    <th scope="row">${quantity.quantity_id}</th>
+                                    <td><a href="#">${quantity.quantity_name}</a> </td>
+                                    <td>${quantity.quantity_owner}</td>
+                                    <td>${quantity.quantity_address}</td>
                                     <td>
-                                      <button class="btn btn-info" v-on:click="getShop(shop.shop_id)">Edit</button>
-                                      <button class="btn btn-danger" v-on:click="deleteShop(shop.shop_id)">Delete</button>
+                                      <button class="btn btn-info" v-on:click="getQuantity(quantity.quantity_id)">Edit</button>
+                                      <button class="btn btn-danger" v-on:click="deleteQuantity(quantity.quantity_id)">Delete</button>
                                     </td>
                                   </tr>
                                 </tbody>
                               </table>
-                              <!-- Add Shop Modal -->
-                              <div class="modal fade" id="addShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                              <!-- Add Quantity Modal -->
+                              <div class="modal fade" id="addQuantityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLongTitle">New Shop</h5>
+                                      <h5 class="modal-title" id="exampleModalLongTitle">New Quantity</h5>
                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                       </button>
                                     </div>
-                                    <form v-on:submit.prevent="addShop()">
+                                    <form v-on:submit.prevent="addQuantity()">
                                     <div class="modal-body">
                                         <div class="form-group">
-                                          <label for="shop_name">Shop Name</label>
+                                          <label for="quantity_name">Quantity Name</label>
                                           <input
                                             type="text"
                                             class="form-control"
-                                            id="shop_name"
-                                            placeholder="Enter Shop name"
-                                            v-model="newShop.shop_name"
+                                            id="quantity_name"
+                                            placeholder="Enter Quantity name"
+                                            v-model="newQuantity.quantity_name"
                                             required="required" >
                                         </div>
                                         <div class="form-group">
-                                          <label for="shop_owner">Shop Owner</label>
+                                          <label for="quantity_owner">Quantity Owner</label>
                                           <input
                                             type="text"
                                             class="form-control"
-                                            id="shop_owner"
-                                            placeholder="Enter Shop Owner"
-                                            v-model="newShop.shop_owner"
+                                            id="quantity_owner"
+                                            placeholder="Enter Quantity Owner"
+                                            v-model="newQuantity.quantity_owner"
                                             required="required"
                                             rows="3">
                                         </div>
                                         <div class="form-group">
-                                          <label for="shop_address">Shop Address</label>
+                                          <label for="quantity_address">Quantity Address</label>
                                           <input
                                             type="text"
                                             class="form-control"
-                                            id="shop_address"
-                                            placeholder="Enter Shop Address"
-                                            v-model="newShop.shop_address"
+                                            id="quantity_address"
+                                            placeholder="Enter Quantity Address"
+                                            v-model="newQuantity.quantity_address"
                                             required="required"
                                             rows="3">
                                         </div>
@@ -184,48 +115,48 @@
                                 </div>
                                 <div class="loading" v-if="loading===true">Loading&#8230;</div>
                               </div>
-                              <!-- End of add shop modal -->
-                              <!-- Edit Shop Modal -->
-                              <div class="modal fade" id="editShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                              <!-- End of add quantity modal -->
+                              <!-- Edit Quantity Modal -->
+                              <div class="modal fade" id="editQuantityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLongTitle">EDIT Shop</h5>
+                                      <h5 class="modal-title" id="exampleModalLongTitle">EDIT Quantity</h5>
                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                       </button>
                                     </div>
-                                    <form v-on:submit.prevent="updateShop()">
+                                    <form v-on:submit.prevent="updateQuantity()">
                                     <div class="modal-body">
                                                 <div class="form-group">
-                                          <label for="shop_name">Shop Heading</label>
+                                          <label for="quantity_name">Quantity Heading</label>
                                           <input
                                             type="text"
                                             class="form-control"
-                                            id="shop_name"
-                                            placeholder="Enter Shop Heading"
-                                            v-model="currentShop.shop_name"
+                                            id="quantity_name"
+                                            placeholder="Enter Quantity Heading"
+                                            v-model="currentQuantity.quantity_name"
                                             required="required" >
                                         </div>
                                         <div class="form-group">
-                                          <label for="shop_owner">Shop Desc</label>
+                                          <label for="quantity_owner">Quantity Desc</label>
                                           <input
                                             type="text"
                                             class="form-control"
-                                            id="shop_owner"
-                                            placeholder="Enter Shop Desc"
-                                            v-model="currentShop.shop_owner"
+                                            id="quantity_owner"
+                                            placeholder="Enter Quantity Desc"
+                                            v-model="currentQuantity.quantity_owner"
                                             required="required"
                                             rows="3">
                                         </div>
                                 <div class="form-group">
-                                          <label for="shop_address">Shop Address</label>
+                                          <label for="quantity_address">Quantity Address</label>
                                           <input
                                             type="text"
                                             class="form-control"
-                                            id="shop_address"
-                                            placeholder="Enter Shop Address"
-                                            v-model="currentShop.shop_address"
+                                            id="quantity_address"
+                                            placeholder="Enter Quantity Address"
+                                            v-model="currentQuantity.quantity_address"
                                             required="required"
                                             rows="3">
                                         </div>
@@ -239,7 +170,7 @@
                                 </div>
                                 <div class="loading" v-if="loading===true">Loading&#8230;</div>
                               </div>
-                              <!-- End of edit shop modal -->
+                              <!-- End of edit quantity modal -->
                     
                             </div>
                           </div>
@@ -274,26 +205,26 @@
       el: '#starting',
       delimiters: ['${','}'],
       data: {
-        shops: [],
+        quantitys: [],
         loading: true,
-        currentShop: {},
+        currentQuantity: {},
         message: null,
-        newShop: { 'shop_name': null, 'shop_owner': null },
+        newQuantity: { 'quantity_name': null, 'quantity_owner': null },
         search_term: '',
       },
       mounted: function() {
-        this.getShops();
+        this.getQuantities();
       },
       methods: {
-        getShops: function() {
-          let api_url = '/api/shop/';
+        getQuantities: function() {
+          let api_url = '/api/quantity/';
           if(this.search_term!==''||this.search_term!==null) {
-            api_url = `/api/shop/?search=${this.search_term}`;
+            api_url = `/api/quantity/?search=${this.search_term}`;
           }
           this.loading = true;
           this.$http.get(api_url)
               .then((response) => {
-                this.shops = response.data;
+                this.quantitys = response.data;
                 this.loading = false;
               })
               .catch((err) => {
@@ -301,13 +232,13 @@
                 console.log(err);
               })
         },
-        getShop: function(id) {
+        getQuantity: function(id) {
           this.loading = true;
-          this.$http.get(`/api/shop/${id}/`)
+          this.$http.get(`/api/quantity/${id}/`)
               .then((response) => {
-                this.currentShop = response.data;
+                this.currentQuantity = response.data;
                 console.log(response.data);
-                $("#editShopModal").modal('show');
+                $("#editQuantityModal").modal('show');
                 this.loading = false;
               })
               .catch((err) => {
@@ -315,37 +246,37 @@
                 console.log(err);
               })
         },
-        addShop: function() {
+        addQuantity: function() {
           this.loading = true;
-          this.$http.post(`/api/shop/`,this.newShop)
+          this.$http.post(`/api/quantity/`,this.newQuantity)
               .then((response) => {
                 this.loading = true;
-                this.getShops();
+                this.getQuantities();
               })
               .catch((err) => {
                 this.loading = true;
                 console.log(err);
               })
         },
-        updateShop: function() {
+        updateQuantity: function() {
           this.loading = true;
-          this.$http.put(`/api/shop/${this.currentShop.shop_id}/`, this.currentShop)
+          this.$http.put(`/api/quantity/${this.currentQuantity.quantity_id}/`, this.currentQuantity)
               .then((response) => {
                 this.loading = false;
-                this.currentShop = response.data;
-                this.getShops();
+                this.currentQuantity = response.data;
+                this.getQuantities();
               })
               .catch((err) => {
                 this.loading = false;
                 console.log(err);
               })
         },
-        deleteShop: function(id) {
+        deleteQuantity: function(id) {
           this.loading = true;
-          this.$http.delete(`/api/shop/${id}/`)
+          this.$http.delete(`/api/quantity/${id}/`)
               .then((response) => {
                 this.loading = false;
-                this.getShops();
+                this.getQuantities();
               })
               .catch((err) => {
                 this.loading = false;

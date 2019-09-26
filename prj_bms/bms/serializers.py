@@ -36,5 +36,6 @@ class QuantitySerializer(serializers.HyperlinkedModelSerializer):
 
 class ShiftSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
+        brand_id = serializers.ReadOnlyField()
         model = Shift
         fields = ['brand_id','stock_shift_date','stock_shift_from','stock_shift_to','stock_shift_p','stock_shift_q','stock_shift_n','stock_shift_d','stock_shift_l','stock_shift_xg','stock_shift_y']

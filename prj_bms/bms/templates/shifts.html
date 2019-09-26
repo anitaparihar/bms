@@ -4,140 +4,430 @@
     <meta charset="utf-8">
     <title>BMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    {% load static %}
+
+  {% load static %}
+    
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
   </head>
 
   <body>
-    <div id="starting">
-      <div class="container">
+      {% include 'topnavbar.html' %}
+      <div class="container-fluid">
         <div class="row">
-          <h1>List of Categorys
-          <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">ADD ARTICLE</button>
-          </h1>
-          &emsp;
-          <div class="form-inline my-2 my-lg-0" style="margin-left: 40%;">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getCategories()">Search</button>
-          </div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Heading</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="category in categorys">
-                <th scope="row">${category.category_id}</th>
-                <td>${category.category_name}</td>
-                <td>
-                  <button class="btn btn-info" v-on:click="getCategory(category.category_id)">Edit</button>
-                  <button class="btn btn-danger" v-on:click="deleteCategory(category.category_id)">Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- Add Category Modal -->
-          <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">ADD ARTICLE</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <form v-on:submit.prevent="addCategory()">
-                <div class="modal-body">
-                    <div class="form-group">
-                      <label for="category_name">Category Heading</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="category_name"
-                        placeholder="Enter Category Heading"
-                        v-model="newCategory.category_name"
-                        required="required" >
-                    </div>
-                    <div class="form-group">
-                      <label for="category_description">Category Body</label>
-                      <textarea
-                        class="form-control"
-                        id="category_description"
-                        placeholder="Enter Category Body"
-                        v-model="newCategory.category_description"
-                        required="required"
-                        rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-                </form>
-              </div>
-            </div>
-            <div class="loading" v-if="loading===true">Loading&#8230;</div>
-          </div>
-          <!-- End of add category modal -->
-          <!-- Edit Category Modal -->
-          <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">EDIT ARTICLE</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <form v-on:submit.prevent="updateCategory()">
-                <div class="modal-body">
-                    <div class="form-group">
-                      <label for="category_name">Category Heading</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="category_name"
-                        placeholder="Enter Category Heading"
-                        v-model="currentCategory.category_name"
-                        required="required" >
-                    </div>
-                    <div class="form-group">
-                      <label for="category_description">Category Body</label>
-                      <textarea
-                        class="form-control"
-                        id="category_description"
-                        placeholder="Enter Category Body"
-                        v-model="currentCategory.category_description"
-                        required="required"
-                        rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-                </form>
-              </div>
-            </div>
-            <div class="loading" v-if="loading===true">Loading&#8230;</div>
-          </div>
-          <!-- End of edit category modal -->
 
-        </div>
-      </div>
-      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+          {% include 'sidenavbar.html' %}
+       
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+              <div id="starting">
+                  <div class="container">
+                    
+                    <div class="invoice-box">
+                        <form v-on:submit.prevent="addShift()">
 
-    </div>
+                            <div class="modal-body">
+                              <div class="row">
+                               
+                              
+                                <div class="form-group col" >
+                                  <label for="brand_id">Brand ID</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="brand_id"
+                                    placeholder="Enter BRand ID"
+                                    v-model="newShift.brand_id"
+									                  name="newShift.brand_id"
+                                    required="required" >
+                                </div>
+                                <div class="form-group col">
+                                  <label for="stock_shift_date">Date</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="brand_id"
+                                    placeholder="Enter Date"
+                                    v-model="newShift.stock_shift_date"
+                                    name="newShift.stock_shift_date"
+                                    required="required" >
+                                </div>
+                              </div>
+
+
+                              <div class="row">
+                                <div class="form-group col">
+                                  <label for="stock_shift_from">stock_shift_from</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_from"
+                                    placeholder="stock_shift_from "
+                                    v-model="newShift.stock_shift_from"
+                                    name="newShift.stock_shift_from"
+                                    required="required" readonly>
+                                </div>
+                                <div class="form-group col">
+                                  <label for="stock_shift_to">stock_shift_toID</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_to"
+                                    placeholder="Enter Shift To"
+                                    v-model="newShift.stock_shift_to"
+                                    name="newShift.stock_shift_to"
+                                    required="required" >
+                                </div>
+                            </div>
+                            <div class="row">
+                                  <div class="form-group col">
+                                  <label for="stock_shift_p">stock_shift_p</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_p"
+                                    placeholder="Enter stock_shift_p"
+                                    v-model="newShift.stock_shift_p"
+                                    name="newShift.stock_shift_p"
+                                    required="required" >
+                                </div>
+                                <div class="form-group col">
+                                  <label for="stock_shift_q">stock_shift_q</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_q"
+                                    placeholder="Enter stock_shift_q"
+                                    v-model="newShift.stock_shift_q"
+                                    name="newShift.stock_shift_q"
+                                    required="stock_shift_q" >
+                                </div>
+                                <div class="form-group col">
+                                  <label for="stock_shift_n">stock_shift_n</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_n"
+                                    placeholder="Enter stock_shift_n"
+                                    v-model="newShift.stock_shift_n"
+                                    name="newShift.stock_shift_n"
+                                    required="required" >
+                                </div>
+                            </div>
+                            <div class="form-group col">
+                                  <label for="stock_shift_d">stock_shift_d</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_d"
+                                    placeholder="Enter Shift stock_shift_d"
+                                    v-model="newShift.stock_shift_d"
+                                    name="newShift.stock_shift_d"
+                                    required="required" >
+                                </div>
+                                <div class="form-group">
+                                  <label for="stock_shift_l">stock_shift_l</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_l"
+                                    placeholder="Enter Shift stock_shift_l"
+                                    v-model="newShift.stock_shift_l"
+                                    name="newShift.stock_shift_l"
+                                    required="required" >
+                                </div>
+                                <div class="form-group">
+                                  <label for="stock_shift_XG">stock_shift_XG</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_xg"
+                                    placeholder="Enter Shift stock_shift_xg"
+                                    v-model="newShift.stock_shift_l"
+                                    name="newShift.stock_shift_xg"
+                                    required="required" >
+                                </div>
+                                <div class="form-group">
+                                  <label for="stock_shift_y">stock_shift_y</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="stock_shift_y"
+                                    placeholder="Enter Shift stock_shift_y"
+                                    v-model="newShift.stock_shift_y"
+                                    name="newShift.stock_shift_y"
+                                    required="required" >
+                                </div>
+                                
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                            </form>
+                    </div>
+
+
+                    <div class="row">
+                      <h1>List of Shifts
+                      <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addShiftModal">ADD ARTICLE</button>
+                      </h1>
+                      &emsp;
+                      <div class="form-inline my-2 my-lg-0" style="margin-left: 40%;">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getShifts()">Search</button>
+                      </div>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Brand id</th>
+                            <th scope="col">Stock Shift Date</th>
+                            <th scope="col">Stock Shift From Shop</th>
+                            <th scope="col">Stock Shift To Shop</th>
+                            <th scope="col">Stock Shift P</th>
+                            <th scope="col">Stock Shift Q</th>
+                            <th scope="col">Stock Shift N</th>
+                            <th scope="col">Stock Shift D</th>
+                            <th scope="col">Stock Shift L</th>
+                            <th scope="col">Stock Shift XG</th>
+                            <th scope="col">Stock Shift Y</th>
+                           
+                            <th scope="col">Action</th>
+
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="shift in shifts">
+                            
+                              <td>${shift.brand_id}</td> 
+                              <td>${shift.stock_shift_date}</td> 
+                              <td>${shift.stock_shift_from}</td>
+                              <td>${shift.stock_shift_to}</td> 
+                              <td>${shift.stock_shift_p}</td>
+                              <td>${shift.stock_shift_q}</td>
+                              <td>${shift.stock_shift_n}</td> 
+                              <td>${shift.stock_shift_d}</td> 
+                              <td>${shift.stock_shift_l}</td> 
+                              <td>${shift.stock_shift_xg}</td> 
+                              <td>${shift.stock_shift_y}</td> 
+                            <td>
+                              <button class="btn btn-info" v-on:click="getShift(shift.shift_id)">Edit</button>
+                              <button class="btn btn-danger" v-on:click="deleteShift(shift.shift_id)">Delete</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <!-- Add Shift Modal -->
+                      <div class="modal fade" id="addShiftModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">ADD ARTICLE</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <form v-on:submit.prevent="addShift()">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                      <label for="brand_id">Brand ID</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="brand_id"
+                                        placeholder="Enter BRand ID"
+                                        v-model="newShift.brand_id"
+                      name="newShift.brand_id"
+                                        required="required" >
+                                    </div>
+                    <div class="form-group">
+                                      <label for="stock_shift_date">Date</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="brand_id"
+                                        placeholder="Enter Date"
+                                        v-model="newShift.stock_shift_date"
+                      name="newShift.stock_shift_date"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_from">stock_shift_from</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_from"
+                                        placeholder="stock_shift_from "
+                                        v-model="newShift.stock_shift_from"
+                      name="newShift.stock_shift_from"
+                                        required="required" readonly>
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_to">stock_shift_toID</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_to"
+                                        placeholder="Enter Shift To"
+                                        v-model="newShift.stock_shift_to"
+                      name="newShift.stock_shift_to"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_p">stock_shift_p</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_p"
+                                        placeholder="Enter stock_shift_p"
+                                        v-model="newShift.stock_shift_p"
+                      name="newShift.stock_shift_p"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_q">stock_shift_q</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_q"
+                                        placeholder="Enter stock_shift_q"
+                                        v-model="newShift.stock_shift_q"
+                      name="newShift.stock_shift_q"
+                                        required="stock_shift_q" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_n">stock_shift_n</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_n"
+                                        placeholder="Enter stock_shift_n"
+                                        v-model="newShift.stock_shift_n"
+                      name="newShift.stock_shift_n"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_d">stock_shift_d</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_d"
+                                        placeholder="Enter Shift stock_shift_d"
+                                        v-model="newShift.stock_shift_d"
+                      name="newShift.stock_shift_d"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_l">stock_shift_l</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_l"
+                                        placeholder="Enter Shift stock_shift_l"
+                                        v-model="newShift.stock_shift_l"
+                      name="newShift.stock_shift_l"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_XG">stock_shift_XG</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_xg"
+                                        placeholder="Enter Shift stock_shift_xg"
+                                        v-model="newShift.stock_shift_l"
+                      name="newShift.stock_shift_xg"
+                                        required="required" >
+                                    </div>
+                      <div class="form-group">
+                                      <label for="stock_shift_y">stock_shift_y</label>
+                                      <input
+                                        type="text"
+                                        class="form-control"
+                                        id="stock_shift_y"
+                                        placeholder="Enter Shift stock_shift_y"
+                                        v-model="newShift.stock_shift_y"
+                      name="newShift.stock_shift_y"
+                                        required="required" >
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                                </form>
+                          </div>
+                        </div>
+                        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                      </div>
+                      <!-- End of add shift modal -->
+                      <!-- Edit Shift Modal -->
+                      <div class="modal fade" id="editShiftModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">EDIT ARTICLE</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <form v-on:submit.prevent="updateShift()">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                  <label for="shift_name">Shift Heading</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="shift_name"
+                                    placeholder="Enter Shift Heading"
+                                    v-model="currentShift.shift_name"
+                                    required="required" >
+                                </div>
+                                <div class="form-group">
+                                  <label for="shift_description">Shift Body</label>
+                                  <textarea
+                                    class="form-control"
+                                    id="shift_description"
+                                    placeholder="Enter Shift Body"
+                                    v-model="currentShift.shift_description"
+                                    required="required"
+                                    rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                            </form>
+                          </div>
+                        </div>
+                        <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                      </div>
+                      <!-- End of edit shift modal -->
+            
+                    </div>
+                  </div>
+                  <div class="loading" v-if="loading===true">Loading&#8230;</div>
+            
+                </div>
+             
+          </main>
+          </div>
+          </div>
+    
 
   <!-- bootrtap js files -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+ <!-- Icons -->
+ <script src="{% static 'js/vendor/feather.min.js' %}"></script>
+  <script>
+    feather.replace()
+  </script>
   <!-- vue.js files -->
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
@@ -147,26 +437,26 @@
       el: '#starting',
       delimiters: ['${','}'],
       data: {
-        categorys: [],
+        shifts: [],
         loading: true,
-        currentCategory: {},
+        currentShift: {},
         message: null,
-        newCategory: { 'category_name': null, 'category_description': null },
+        newShift: { 'shift_name': null, 'shift_description': null },
         search_term: '',
       },
       mounted: function() {
-        this.getCategories();
+        this.getShifts();
       },
       methods: {
-        getCategories: function() {
-          let api_url = '/api/category/';
+        getShifts: function() {
+          let api_url = '/api/shift/';
           if(this.search_term!==''||this.search_term!==null) {
-            api_url = `/api/category/?search=${this.search_term}`;
+            api_url = `/api/shift/?search=${this.search_term}`;
           }
           this.loading = true;
           this.$http.get(api_url)
               .then((response) => {
-                this.categorys = response.data;
+                this.shifts = response.data;
                 this.loading = false;
               })
               .catch((err) => {
@@ -174,13 +464,13 @@
                 console.log(err);
               })
         },
-        getCategory: function(id) {
+        getShift: function(id) {
           this.loading = true;
-          this.$http.get(`/api/category/${id}/`)
+          this.$http.get(`/api/shift/${id}/`)
               .then((response) => {
-                this.currentCategory = response.data;
+                this.currentShift = response.data;
                 console.log(response.data);
-                $("#editCategoryModal").modal('show');
+                $("#editShiftModal").modal('show');
                 this.loading = false;
               })
               .catch((err) => {
@@ -188,37 +478,37 @@
                 console.log(err);
               })
         },
-        addCategory: function() {
+        addShift: function() {
           this.loading = true;
-          this.$http.post(`/api/category/`,this.newCategory)
+          this.$http.post(`/api/shift/`,this.newShift)
               .then((response) => {
                 this.loading = true;
-                this.getCategories();
+                this.getShifts();
               })
               .catch((err) => {
                 this.loading = true;
                 console.log(err);
               })
         },
-        updateCategory: function() {
+        updateShift: function() {
           this.loading = true;
-          this.$http.put(`/api/category/${this.currentCategory.category_id}/`, this.currentCategory)
+          this.$http.put(`/api/shift/${this.currentShift.shift_id}/`, this.currentShift)
               .then((response) => {
                 this.loading = false;
-                this.currentCategory = response.data;
-                this.getCategories();
+                this.currentShift = response.data;
+                this.getShifts();
               })
               .catch((err) => {
                 this.loading = false;
                 console.log(err);
               })
         },
-        deleteCategory: function(id) {
+        deleteShift: function(id) {
           this.loading = true;
-          this.$http.delete(`/api/category/${id}/`)
+          this.$http.delete(`/api/shift/${id}/`)
               .then((response) => {
                 this.loading = false;
-                this.getCategories();
+                this.getShifts();
               })
               .catch((err) => {
                 this.loading = false;

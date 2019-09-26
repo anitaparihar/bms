@@ -4,9 +4,7 @@
     <meta charset="utf-8">
     <title>BMS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
@@ -15,14 +13,13 @@
     <div id="starting">
       <div class="container">
         <div class="row">
-             {% include 'sidenavbar.html' %}
-          <h1>List of Shops
-          <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addShopModal">ADD ARTICLE</button>
+          <h1>List of Categorys
+          <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">ADD ARTICLE</button>
           </h1>
           &emsp;
           <div class="form-inline my-2 my-lg-0" style="margin-left: 40%;">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getShops()">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getCategories()">Search</button>
           </div>
           <table class="table">
             <thead>
@@ -33,18 +30,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="shop in shops">
-                <th scope="row">${shop.shop_id}</th>
-                <td>${shop.shop_name}</td>
+              <tr v-for="category in categorys">
+                <th scope="row">${category.category_id}</th>
+                <td>${category.category_name}</td>
                 <td>
-                  <button class="btn btn-info" v-on:click="getShop(shop.shop_id)">Edit</button>
-                  <button class="btn btn-danger" v-on:click="deleteShop(shop.shop_id)">Delete</button>
+                  <button class="btn btn-info" v-on:click="getCategory(category.category_id)">Edit</button>
+                  <button class="btn btn-danger" v-on:click="deleteCategory(category.category_id)">Delete</button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <!-- Add Shop Modal -->
-          <div class="modal fade" id="addShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <!-- Add Category Modal -->
+          <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -53,39 +50,27 @@
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form v-on:submit.prevent="addShop()">
+                <form v-on:submit.prevent="addCategory()">
                 <div class="modal-body">
                     <div class="form-group">
-                      <label for="shop_name">Shop Heading</label>
+                      <label for="category_name">Category Heading</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="shop_name"
-                        placeholder="Enter Shop Heading"
-                        v-model="newShop.shop_name"
+                        id="category_name"
+                        placeholder="Enter Category Heading"
+                        v-model="newCategory.category_name"
                         required="required" >
                     </div>
                     <div class="form-group">
-                      <label for="shop_owner">Shop Desc</label>
-                      <input
-                        type="text"
+                      <label for="category_description">Category Body</label>
+                      <textarea
                         class="form-control"
-                        id="shop_owner"
-                        placeholder="Enter Shop Desc"
-                        v-model="newShop.shop_owner"
+                        id="category_description"
+                        placeholder="Enter Category Body"
+                        v-model="newCategory.category_description"
                         required="required"
-                        rows="3">
-                    </div>
-					  <div class="form-group">
-                      <label for="shop_address">Shop Address</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="shop_address"
-                        placeholder="Enter Shop Address"
-                        v-model="newShop.shop_address"
-                        required="required"
-                        rows="3">
+                        rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -97,9 +82,9 @@
             </div>
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
           </div>
-          <!-- End of add shop modal -->
-          <!-- Edit Shop Modal -->
-          <div class="modal fade" id="editShopModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <!-- End of add category modal -->
+          <!-- Edit Category Modal -->
+          <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -108,39 +93,27 @@
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <form v-on:submit.prevent="updateShop()">
+                <form v-on:submit.prevent="updateCategory()">
                 <div class="modal-body">
-                            <div class="form-group">
-                      <label for="shop_name">Shop Heading</label>
+                    <div class="form-group">
+                      <label for="category_name">Category Heading</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="shop_name"
-                        placeholder="Enter Shop Heading"
-                        v-model="currentShop.shop_name"
+                        id="category_name"
+                        placeholder="Enter Category Heading"
+                        v-model="currentCategory.category_name"
                         required="required" >
                     </div>
                     <div class="form-group">
-                      <label for="shop_owner">Shop Desc</label>
-                      <input
-                        type="text"
+                      <label for="category_description">Category Body</label>
+                      <textarea
                         class="form-control"
-                        id="shop_owner"
-                        placeholder="Enter Shop Desc"
-                        v-model="currentShop.shop_owner"
+                        id="category_description"
+                        placeholder="Enter Category Body"
+                        v-model="currentCategory.category_description"
                         required="required"
-                        rows="3">
-                    </div>
-					  <div class="form-group">
-                      <label for="shop_address">Shop Address</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="shop_address"
-                        placeholder="Enter Shop Address"
-                        v-model="currentShop.shop_address"
-                        required="required"
-                        rows="3">
+                        rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -152,7 +125,7 @@
             </div>
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
           </div>
-          <!-- End of edit shop modal -->
+          <!-- End of edit category modal -->
 
         </div>
       </div>
@@ -174,26 +147,26 @@
       el: '#starting',
       delimiters: ['${','}'],
       data: {
-        shops: [],
+        categorys: [],
         loading: true,
-        currentShop: {},
+        currentCategory: {},
         message: null,
-        newShop: { 'shop_name': null, 'shop_owner': null },
+        newCategory: { 'category_name': null, 'category_description': null },
         search_term: '',
       },
       mounted: function() {
-        this.getShops();
+        this.getCategories();
       },
       methods: {
-        getShops: function() {
-          let api_url = '/api/shop/';
+        getCategories: function() {
+          let api_url = '/api/category/';
           if(this.search_term!==''||this.search_term!==null) {
-            api_url = `/api/shop/?search=${this.search_term}`;
+            api_url = `/api/category/?search=${this.search_term}`;
           }
           this.loading = true;
           this.$http.get(api_url)
               .then((response) => {
-                this.shops = response.data;
+                this.categorys = response.data;
                 this.loading = false;
               })
               .catch((err) => {
@@ -201,13 +174,13 @@
                 console.log(err);
               })
         },
-        getShop: function(id) {
+        getCategory: function(id) {
           this.loading = true;
-          this.$http.get(`/api/shop/${id}/`)
+          this.$http.get(`/api/category/${id}/`)
               .then((response) => {
-                this.currentShop = response.data;
+                this.currentCategory = response.data;
                 console.log(response.data);
-                $("#editShopModal").modal('show');
+                $("#editCategoryModal").modal('show');
                 this.loading = false;
               })
               .catch((err) => {
@@ -215,37 +188,37 @@
                 console.log(err);
               })
         },
-        addShop: function() {
+        addCategory: function() {
           this.loading = true;
-          this.$http.post(`/api/shop/`,this.newShop)
+          this.$http.post(`/api/category/`,this.newCategory)
               .then((response) => {
                 this.loading = true;
-                this.getShops();
+                this.getCategories();
               })
               .catch((err) => {
                 this.loading = true;
                 console.log(err);
               })
         },
-        updateShop: function() {
+        updateCategory: function() {
           this.loading = true;
-          this.$http.put(`/api/shop/${this.currentShop.shop_id}/`, this.currentShop)
+          this.$http.put(`/api/category/${this.currentCategory.category_id}/`, this.currentCategory)
               .then((response) => {
                 this.loading = false;
-                this.currentShop = response.data;
-                this.getShops();
+                this.currentCategory = response.data;
+                this.getCategories();
               })
               .catch((err) => {
                 this.loading = false;
                 console.log(err);
               })
         },
-        deleteShop: function(id) {
+        deleteCategory: function(id) {
           this.loading = true;
-          this.$http.delete(`/api/shop/${id}/`)
+          this.$http.delete(`/api/category/${id}/`)
               .then((response) => {
                 this.loading = false;
-                this.getShops();
+                this.getCategories();
               })
               .catch((err) => {
                 this.loading = false;

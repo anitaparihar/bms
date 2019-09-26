@@ -20,85 +20,20 @@
         <div class="row">
 
           {% include 'sidenavbar.html' %}
-          <!-- <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-                {% block page_nav %}
-                    <ul class="nav nav-pills ">
-                      <h3>Stock Entries</h3>
-                      </ul>{% endblock %}
-                {% block content %}
-                
-                <div id="app">
-                    <div class="container">
-                      <div class="row">
-                    
-                        <div class="invoice-box">
-                          <table cellpadding="0" cellspacing="0">
-                            <tr class="top">
-                              <td colspan="4">
-                                <table>
-                                  <tr>
-                                    <td class="title"><h3>NAME OF THE SHOP </h3>                                    </td>
-                        
-                                   
-                                  </tr>
-                                </table>
-                              </td>
-                            </tr>
-                        
-                          
-                            <tr class="heading">
-                              <td colspan="3">Payment Method</td>
-                              <td>Check #</td>
-                            </tr>
-                        
-                            <tr class="details">
-                              <td colspan="3">Check</td>
-                              <td>1000</td>
-                            </tr>
-                        
-                            <tr class="heading">
-                              <td>Item</td>
-                              <td>Unit Cost</td>
-                              <td>Quantity</td>
-                              <td>Price</td>
-                            </tr>
-                            <tr class="item" v-for="item in items">
-                              <td><input v-model="item.description" /></td>
-                              <td>$<input type="number" v-model="item.price" /></td>
-                              <td><input type="number" v-model="item.quantity" /></td>
-                              
-                              <td>${ item.price } </td>
-                            </tr>
-                        
-                            <tr>
-                              <td colspan="4">
-                                <button class="btn-add-row" @click="addRow">Add row</button>
-                              </td>
-                            </tr>
-                        
-                            <tr class="total">
-                              <td colspan="3"></td>
-                              <td>Total: ${ total | currency }</td>
-                            </tr>
-                          </table>
-                        </div>
-                        
-                       
-              
-                      </div>
-                    </div>
-              
-                  </div>
-                {% endblock %}
-              </main> -->
+       
           <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div id="starting">
+
+
+
               <div class="container">
                   <ul class="nav nav-pills ">
                       <h3>Stock Entry</h3>
                   </ul>
 
+                
                   <form v-on:submit.prevent="addInvoice()">
+                      {% if perms.invoice.can_add_invoice %}
                       <div class="modal-body invoice-box ">
                           
                           <div class="row">
@@ -122,14 +57,8 @@
                           <div class="row">
                             <div class="col">
                                 <label for="invoice_transaction_id">Invoice ID </label>
-                                <input
-                                  type="text"
-                                  name="newInvoice.invoice_transaction_id"
-                                  class="form-control"
-                                  id="invoice_transaction_id"
-                                  placeholder="Enter Invoice ID"
-                                  
-                                  required="required" >
+                                <input type="text" name="newInvoice.invoice_transaction_id" class="form-control"
+                                  id="invoice_transaction_id" placeholder="Enter Invoice ID" required="required" >
                             </div>  
                             <div class="col">
                                 <label for="invoice_brand_size">Brand Size</label>
@@ -162,10 +91,10 @@
                                   type="text"
                                   id="invoice_rate_per_case"
                                   class="form-control"
-                                  value="rate"
+                                  value="invoice_rate_per_case"
                                   name="newInvoice.invoice_rate_per_case"
-                                  v-model="rate"
-                                  rows="3" > <span> ${ rate }</span>
+                                  v-model="newInvoice.invoice_rate_per_case"
+                                  rows="3" > 
                               </div>
                               <div class="col">
                                 <label for="invoice_no_of_bottles">No.of Bottles</label>
@@ -197,8 +126,9 @@
                         </div>
                       <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
+                    </div>{% endif %}
+                  </form>
+                   
                 
               
                 <div class="row">
@@ -213,7 +143,9 @@
                           <th scope="col">Rate</th>  <th scope="col"># of Bottle </th>   <th scope="col">Total</th>  <th scope="col">Action</th>
                         </tr>
                     </thead>
-                    <tbody>                                  
+                   
+                    <tbody>    
+                                                   
                       <tr v-for="invoice in invoices">
                           <th scope="row">${invoice.invoice_transaction_id}</th>
                           <td>${invoice.brand_id}</td>
@@ -222,13 +154,16 @@
                           <td>${invoice.invoice_rate_per_case}</td>
                           <td>${invoice.invoice_no_of_bottles}</td>
                           <td>${invoice.invoice_total}</td>
-
+                          
                           <td>
                             <button class="btn btn-info" v-on:click="getInvoice(invoice.invoice_transaction_id)">Edit</button>
+                            {% if perms.invoice.can_delete_invoice %}  
                             <button class="btn btn-danger" v-on:click="deleteInvoice(invoice.invoice_transaction_id)">Delete</button>
-                          </td>
+                           {% endif %}
+                          </td> 
                       </tr>
                     </tbody>
+                  
                   </table>
                 
               
@@ -363,6 +298,16 @@
         message: null,
         newInvoice: { 'invoice_transaction_id': null, 'invoice_brand_size': null, 'invoice_rate_per_case':null },
         search_term: '',
+
+        searchHero: '',
+    heroes: [
+      { name: 'Spiderman', image: true, bookmark: 'Bookmarkhere' },
+      { name: 'Hulk', image: true, bookmark: 'Bookmarkhere' },
+      { name: 'Iron Man', image: true, bookmark: 'Bookmarkhere' },
+      { name: 'Captain America', image: true, bookmark: 'Bookmarkhere' },
+      { name: 'Iron Man2', image: true, bookmark: 'Bookmarkhere' }
+    ]
+
       },
       mounted: function() {
         this.getInvoices();
@@ -371,23 +316,48 @@
         this.getBrandsSize();
         this.getRates();
       },
-      computed: {
-        getRates: function(){
-          var x =this.newInvoice.brand_id;
-          var marvelHeroes = this.brands.filter(function(bd) {
-            if (bd.brand_id==x) {
-              console.log(bd.brand_q_cost);
-              return this.rate = bd.brand_q_cost;
-              
-           }
-            console.log(marvelHeroes);
-          } );
+  //     computed: {
+  //   filterSearch() {
 
-      },
+
+  //     let api_url = '/api/brand/';
+  //     this.newInvoice.category_id = 1;
+  //         api_url = `/api/brand/?search=${this.newInvoice.category_id}`;
+  //         this.loading = true;
+  //         this.$http.get(api_url)
+  //             .then((response) => {
+  //               this.brands = response.data;
+  //             });
+
+  //       return this.brands.filter( hero => {
+  //       this.newInvoice.brand_id =1;
+  //       if (hero.brand_id == this.newInvoice.brand_id){
+  //         console.log(hero.brand_q_cost, this.searchHero)
+        
+  //       }
+        
+  //     })
+  //   }
+  // },
+
+  
+     
+        
+          // var x =this.newInvoice.brand_id;
+          // var marvelHeroes = this.brands.filter(function(bd) {
+          //   if (bd.brand_id==x) {
+          //     console.log(bd.brand_q_cost);
+          //     return this.rate = bd.brand_q_cost;
+              
+          //  }
+          //   console.log(marvelHeroes);
+          // } );
+
+      // },
     
     
     
-      },
+      // },
       methods: {
         getInvoices: function() {
           let api_url = '/api/invoice/';
@@ -505,33 +475,6 @@
 
     });
 
-
-    const app = new Vue({
-  el: '#app',
-  delimiters: ['${','}'],
-  data: {
-    items: [
-     ]
-  },
-  computed: {
-    total() {
-      return this.items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-      );
-    }
-  },
-  methods: {
-    addRow() {
-      this.items.push({ description: "", quantity: 1, price: 0 });
-    }
-  },
-  filters: {
-    currency(value) {
-      return value.toFixed(2);
-    }
-  }
-});
 
   </script>
   </body>

@@ -16,88 +16,11 @@
   </head>
 
   <body>
-      <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-          <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'home' %}">I Management System</a>
-          <ul class="navbar-nav px-3">
-            <li class="nav-item text-nowrap">
-              {% if user.is_authenticated %}
-              <font color="white">User:  {{ user.get_username }}</font>              
-              <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}">Log out</a>
-              {% else %}
-              <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-              {% endif %} 
-            </li>
-            
-          </ul> 
-      </nav>
-    
-    <ul>
-
-
+      {% include 'topnavbar.html' %}
       <div class="container-fluid">
-          <div class="row">
-              <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                  <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                      <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'home' %}">
-                          <span data-feather="home"></span>
-                          Main <span class="sr-only">(current)</span>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="{% url 'invoice' %}">
-                          <span data-feather="file"></span>
-                          Invoice
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="{% url 'category' %}">
-                          <span data-feather="shopping-cart"></span>
-                          category
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="users"></span>
-                          Manage User
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">
-                          <span data-feather="bar-chart-2"></span>
-                          Reports
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="{% url 'invoice' %}">
-                          <span data-feather="layers"></span>
-                          Invoice
-                        </a>
-                      </li>
-                    </ul>
-        
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                      <span>Saved reports</span>
-                      
-                    </h6>
-                    <ul class="nav flex-column mb-2">
-                      <li class="nav-item">
-                        <a class="nav-link" href="">
-                          <span data-feather="file-text"></span>
-                          Stocks Categories
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="">
-                          <span data-feather="file-text"></span>
-                          Create Categories
-                        </a>
-                      </li>
-      
-                    </ul>
-                  </div>
-              </nav>
+        <div class="row">
+
+          {% include 'sidenavbar.html' %}
               <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
                       {% block page_nav %}
                           <ul class="nav nav-pills ">
@@ -108,9 +31,11 @@
                       <div id="starting">
                           <div class="container">
                             <div class="row">
+                                {% if perms.shop.can_add_shop %}
                               <h1>
-                              <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addShopModal">New Shop</button>
-                              </h1>
+          
+                              <button  type="button" class="btn btn-success" data-toggle="modal" data-target="#addShopModal">Add a Shop</button>
+                              </h1>{% endif %}
                               &emsp;
                               <div class="form-inline my-2 my-lg-0" style="margin-left: 50%;">
                                 <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
@@ -134,8 +59,11 @@
                                     <td>${shop.shop_owner}</td>
                                     <td>${shop.shop_address}</td>
                                     <td>
+                                        {% if perms.shop.can_change_shop %}
                                       <button class="btn btn-info" v-on:click="getShop(shop.shop_id)">Edit</button>
+                                      {% endif %} {% if perms.shop.can_delete_shop %}
                                       <button class="btn btn-danger" v-on:click="deleteShop(shop.shop_id)">Delete</button>
+                                      {% endif %}
                                     </td>
                                   </tr>
                                 </tbody>
